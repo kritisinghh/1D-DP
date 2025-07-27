@@ -1,0 +1,71 @@
+/*
+Problem Statement
+There is a frog on the 1st step of an N stairs long staircase. The frog wants to reach the Nth stair.
+HEIGHT[] is the height of the (i-th) stair.
+If the frog jumps from the i-th stair, the energy lost in the jump is given by
+|HEIGHT[i] - HEIGHT[j]|.
+
+Like in the Frog is on i-th staircase, he can jump either to (i+1)-th stair or to (i+2)-th stair.
+Your task is to find the minimum total energy used by the frog to reach from 1st stair to Nth stair.
+
+For Example
+If the given HEIGHT array is [10, 20, 10], the answer is 20 as the frog can jump from 1st stair to 2nd stair (|20 - 10| = 10 energy lost), and then a jump from 2nd stair to last stair (|10 - 20| = 10 energy lost).
+So, the total energy lost is 20.
+*/
+// the same question with k jumps
+
+// using recursion
+int f1(int ind, int k, vector<int> &heights)){
+    if (ind==0) return 0;
+    int minsteps=INT_MAX;
+    for(int j=1;j<=k;j++){
+        if (ind-j>=0) int jump=f1(ind-j)+abs(heights[ind]-heights[ind-j]);
+        minsteps=min(minsteps, jump);
+    }
+    return minsteps;
+}
+
+
+// DP, declare an array vector<int> dp(n+1, -1)
+// memoization(top down)
+int f2(int ind, int k, vector<int> &heights, vector<int> &dp){
+    if (ind==0) return 0;
+    if (dp[ind]!=-1) return dp[ind];
+    int minsteps=INT_MAX;
+    for(int j=1;j<=k;j++){
+        if (ind-j>=0) int jump=f2(ind-j)+abs(heights[ind]-heights[ind-j]);
+        minsteps=min(minsteps, jump);
+    } 
+    return dp[ind]=minsteps;
+}
+
+
+int frogJump(int n, int k, vector<int> &heights){
+    // 1. recursion
+    return f1(n-1, k, heights);
+    
+    // 2. memoization
+    vector<int> dp(n+1, -1);
+    return f2(n-1, k, heights, dp);
+    
+    // 3. tabulation
+    vector<int> dp(n, 0);
+    dp[0]=0;
+    for(int ind=1;ind<=n-1;ind++){
+        int minsteps=INT_MAX;
+        for(int j=1;j<=k;j++){
+            if (ind-j>=0) int jump=f1(ind-j)+abs(heights[ind]-heights[ind-j]);
+            minsteps=min(minsteps, jump);
+        }
+        dp[ind]=minsteps;
+    }
+    return dp[n-1];
+    
+    // 4. space optimized, we can optimize from O(n)->O(k), but int
+    // previous question we optimized it from O(n)->O(1)
+    // we can have a list with k last values, and can remove one from 
+    // start and add new from back
+    
+}
+
+
