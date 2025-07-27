@@ -1,0 +1,61 @@
+class Solution {
+    /*
+    int func1(int ind, vector<int> &nums){
+        if (ind==0) return nums[0];
+        if (ind<0) return 0;
+        int pick=nums[ind]+func1(ind-2, nums);
+        int notpick=func1(ind-1, nums);
+        return max(pick, notpick);
+    }
+    */
+    /*
+    int func2(int ind, vector<int> &dp, vector<int> &nums){
+        if (ind==0) return nums[0];
+        if (ind<0) return 0;
+        if (dp[ind]!=-1) return dp[ind];
+        int pick=nums[ind]+func2(ind-2, dp, nums);
+        int notpick=func2(ind-1, dp, nums);
+        return dp[ind]=max(pick, notpick);
+    */
+public:
+    int rob(vector<int>& nums) {
+        // 1. recursion
+        // return func1(nums.size()-1, nums);
+
+        // 2. memoization
+        /*
+        int n=nums.size();
+        vector<int> dp(n+1, -1);
+        return func2(n-1, dp, nums);
+        */
+
+        // 3. tabulization
+        /*
+        int n=nums.size();
+        if (n==0) return 0;
+        if (n==1) return nums[0];
+        vector<int> dp(n+1, 0);
+        dp[0]=nums[0];
+        dp[1]=max(nums[0], nums[1]);
+        for(int i=2;i<n;i++){
+            dp[i]=max(nums[i]+dp[i-2], dp[i-1]); 
+            // or we can have loop from 1 and add a cond before dp[i-2] where i>1 
+        } 
+        return dp[n-1];
+        */
+
+        // 4. space optimized
+        int n=nums.size();
+        if (n==0) return 0;
+        if (n==1) return nums[0];
+        int dp0=nums[0];
+        int dp1=max(nums[0], nums[1]); //if taking loop from 1, dp0=0, dp1=nums[0], recursion logic
+        for(int i=2;i<n;i++){
+            int curr=max(dp0+nums[i], dp1);
+            dp0=dp1;
+            dp1=curr;
+        } 
+        return max(dp0, dp1);
+        
+    }
+};
